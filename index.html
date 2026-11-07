@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open-Ended Discovery Lab — 13 Simulations</title>
+<style>
+:root,[data-theme="light"]{
+  --bg-primary:#FFFFFF;--bg-secondary:#F5F5F7;--bg-tertiary:#FAFAFC;
+  --text-primary:#1D1D1F;--text-secondary:#6E6E73;--text-muted:#86868B;
+  --accent:#0071E3;--accent-hover:#0066CC;--border:#D2D2D7;
+  --success:#248A3D;--warning:#B25000;--danger:#D70015;--gold:#F59E0B;
+  --space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-8:64px;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:18px;--radius-pill:9999px;
+  --ease:cubic-bezier(.4,0,.6,1);--dur:250ms;
+  --shadow-lg:0 12px 32px rgba(0,0,0,.12);
+}
+[data-theme="dark"]{
+  --bg-primary:#000;--bg-secondary:#1C1C1E;--bg-tertiary:#2C2C2E;
+  --text-primary:#F5F5F7;--text-secondary:#A1A1A6;--text-muted:#8E8E93;
+  --border:#3A3A3C;--shadow-lg:0 12px 32px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.5;min-height:100vh;transition:background var(--dur) var(--ease),color var(--dur) var(--ease);-webkit-font-smoothing:antialiased}
+[dir="rtl"]{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',sans-serif}
+[dir="rtl"] .num{direction:ltr;unicode-bidi:embed;display:inline-block}
+.hidden{display:none!important}
+
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) var(--space-6);border-bottom:1px solid var(--border);background:var(--bg-primary);position:sticky;top:0;z-index:100;backdrop-filter:saturate(180%) blur(20px)}
+.navbar__brand{display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:1.125rem;cursor:pointer;text-decoration:none;color:inherit}
+.navbar__brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),#8b5cf6);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:#fff}
+.navbar__actions{display:flex;gap:var(--space-2)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:var(--space-2) var(--space-4);border-radius:var(--radius-pill);font-family:inherit;font-weight:500;font-size:.875rem;border:1px solid transparent;cursor:pointer;transition:all var(--dur) var(--ease);min-height:36px;text-decoration:none;color:inherit}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn--primary{background:var(--accent);color:#fff}
+.btn--primary:hover{background:var(--accent-hover)}
+.btn--secondary{background:var(--bg-primary);color:var(--text-primary);border-color:var(--border)}
+.btn--secondary:hover{background:var(--bg-secondary)}
+.btn--ghost{background:transparent;color:var(--text-secondary)}
+.btn--ghost:hover{background:var(--bg-secondary);color:var(--text-primary)}
+.btn--gold{background:var(--gold);color:#fff}
+.btn--gold:hover{background:#d97706}
+
+.hero{text-align:center;padding:var(--space-8) var(--space-5) var(--space-5);max-width:900px;margin:0 auto}
+.hero__title{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:var(--space-4)}
+.hero__title-highlight{background:linear-gradient(135deg,var(--accent),#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero__desc{font-size:1.125rem;color:var(--text-secondary);max-width:600px;margin:0 auto var(--space-4)}
+.hero__warning{max-width:640px;margin:0 auto var(--space-6);padding:12px 18px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--radius-sm);font-size:.8125rem;color:var(--gold);line-height:1.6}
+.hero__stats{display:flex;gap:var(--space-6);justify-content:center;margin-top:var(--space-4);flex-wrap:wrap}
+.hero__stat-value{font-size:1.75rem;font-weight:700}
+.hero__stat-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase}
+
+.labs-section{max-width:1200px;margin:0 auto;padding:var(--space-6) var(--space-5) var(--space-8)}
+.labs-section__header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--space-5);flex-wrap:wrap;gap:var(--space-3)}
+.labs-section__title{font-size:1.5rem;font-weight:700}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{padding:6px 12px;border-radius:var(--radius-pill);border:1px solid var(--border);background:var(--bg-secondary);cursor:pointer;font-size:.8125rem;color:var(--text-secondary)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-4)}
+.lab-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);cursor:pointer;transition:all var(--dur) var(--ease);display:flex;flex-direction:column;gap:var(--space-3);text-decoration:none;color:inherit}
+.lab-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--accent)}
+.lab-card__header{display:flex;justify-content:space-between;align-items:flex-start}
+.lab-card__icon{width:44px;height:44px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff}
+.lab-card__badge{font-size:.6875rem;font-weight:600;padding:2px 8px;border-radius:var(--radius-pill);text-transform:uppercase;white-space:nowrap;background:rgba(245,158,11,.15);color:var(--gold)}
+.lab-card__title{font-size:1.0625rem;font-weight:600}
+.lab-card__desc{font-size:.8125rem;color:var(--text-secondary);flex:1}
+.lab-card__footer{display:flex;justify-content:space-between;padding-top:var(--space-3);border-top:1px solid var(--border);font-size:.75rem;color:var(--text-muted)}
+
+.lab-view{max-width:1150px;margin:0 auto;padding:var(--space-5)}
+.lab-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-5);gap:var(--space-3);flex-wrap:wrap}
+.lab-header__back{display:inline-flex;align-items:center;gap:6px;cursor:pointer;color:var(--accent);font-weight:500;text-decoration:none;font-size:.875rem}
+.lab-header__back:hover{text-decoration:underline}
+.lab-header__title{font-size:1.5rem;font-weight:700;margin-top:8px}
+.lab-header__desc{color:var(--text-secondary);margin-top:4px}
+
+.lab-workspace{display:grid;grid-template-columns:1fr 400px;gap:var(--space-5)}
+@media(max-width:950px){.lab-workspace{grid-template-columns:1fr}}
+
+.canvas-container{background:#0a0a0a;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border);position:relative;aspect-ratio:1}
+#labCanvas{width:100%;height:100%;display:block}
+
+.info-box{margin-top:var(--space-3);padding:14px 16px;border-radius:var(--radius-sm);background:var(--bg-secondary);border:1px solid var(--border)}
+.info-box__title{font-size:.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.info-item{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.info-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.info-item__name{font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:3px}
+.info-item__desc{font-size:.75rem;color:var(--text-secondary);line-height:1.5}
+
+.lab-controls{background:var(--bg-secondary);border-radius:var(--radius-md);padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-4);max-height:calc(100vh - 160px);overflow-y:auto}
+.control-group{display:flex;flex-direction:column;gap:8px}
+.control-row{display:flex;gap:8px;flex-wrap:wrap}
+.control-row .btn{flex:1;min-width:80px}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat-box{background:var(--bg-primary);border:1px solid var(--border);padding:8px;border-radius:var(--radius-sm)}
+.stat-box__label{font-size:.625rem;color:var(--text-muted);text-transform:uppercase;white-space:nowrap}
+.stat-box__value{font-size:1rem;font-weight:700;font-family:monospace}
+
+.log-box{background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;height:260px;overflow-y:auto;font-family:'SF Mono',Consolas,monospace;font-size:.7rem}
+.log-entry{padding:4px 0;border-bottom:1px solid var(--bg-secondary);color:var(--text-secondary);line-height:1.5}
+.log-entry:last-child{border-bottom:none}
+.log-entry.discovery{color:var(--gold);font-weight:600;background:rgba(245,158,11,.08);padding:6px;border-radius:4px;margin:4px 0;border-left:3px solid var(--gold)}
+.log-entry.success{color:var(--success)}
+.log-entry.error{color:var(--danger)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="#/" class="navbar__brand"><div class="navbar__brand-icon">🌀</div><span>Open Discovery Lab</span></a>
+  <div class="navbar__actions">
+    <button class="btn btn--ghost" id="btnLang">EN</button>
+    <button class="btn btn--ghost" id="btnTheme">🌙</button>
+  </div>
+</nav>
+
+<main id="app">
+  <div id="landingView" class="view">
+    <section class="hero">
+      <h1 class="hero__title">
+        <span data-i18n="hero.title.line1">اكتشاف مفتوح النهاية</span><br>
+        <span class="hero__title-highlight" data-i18n="hero.title.line2">النظام يبحث عن المجهول</span>
+      </h1>
+      <p class="hero__desc" data-i18n="hero.desc">لا أهداف مسبقة. النظام يستكشف فضاء المحاكاة، يكافئ الحالات الجديدة والمعقدة، ويسجل ظواهر لم نتوقعها.</p>
+      <p class="hero__warning" data-i18n="hero.warning">⚠️ هذا ليس بحثاً عن هدف. إنه بحث عن الابتكار (Novelty Search). النظام يُكافأ على الحالات البعيدة عن الأرشيف والمعقدة هيكلياً.</p>
+      <div class="hero__stats">
+        <div class="hero__stat"><div class="hero__stat-value num">13</div><div class="hero__stat-label" data-i18n="hero.stat.labs">مختبرات</div></div>
+        <div class="hero__stat"><div class="hero__stat-value num">60</div><div class="hero__stat-label" data-i18n="hero.stat.pop">فرد/جيل</div></div>
+        <div class="hero__stat"><div class="hero__stat-value num">∞</div><div class="hero__stat-label" data-i18n="hero.stat.gen">أجيال</div></div>
+      </div>
+    </section>
+
+    <section class="labs-section">
+      <div class="labs-section__header">
+        <div>
+          <h2 class="labs-section__title" data-i18n="labs.title">المختبرات</h2>
+          <p data-i18n="labs.subtitle" style="color:var(--text-secondary);font-size:.875rem;">اختر مختبراً لبدء الاستكشاف المفتوح</p>
+        </div>
+        <div class="filters" id="filters">
+          <button class="filter-btn active" data-filter="all" data-i18n="filter.all">الكل</button>
+          <button class="filter-btn" data-filter="biology" data-i18n="filter.biology">أحياء</button>
+          <button class="filter-btn" data-filter="physics" data-i18n="filter.physics">فيزياء</button>
+          <button class="filter-btn" data-filter="math" data-i18n="filter.math">رياضيات</button>
+          <button class="filter-btn" data-filter="cs" data-i18n="filter.cs">حاسوب</button>
+        </div>
+      </div>
+      <div class="labs-grid" id="labsGrid"></div>
+    </section>
+  </div>
+
+  <div id="labView" class="view hidden">
+    <div class="lab-view">
+      <div class="lab-header">
+        <div>
+          <a href="#/" class="lab-header__back">← <span data-i18n="btn.back">رجوع</span></a>
+          <h2 class="lab-header__title" id="labTitle">—</h2>
+          <p class="lab-header__desc" id="labDesc">—</p>
+        </div>
+        <div><span class="lab-card__badge">🌀 Novelty Search</span></div>
+      </div>
+
+      <div class="lab-workspace">
+        <div>
+          <div class="canvas-container"><canvas id="labCanvas" width="500" height="500"></canvas></div>
+          <div class="info-box" id="infoBox"></div>
+          <div style="margin-top:12px;padding:12px;background:var(--bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--border)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <span style="font-size:.75rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em" data-i18n="discoveries.title">الاكتشافات الغريبة</span>
+              <button class="btn btn--ghost" style="padding:2px 8px;font-size:10px" id="btnExport" data-i18n="btn.export">📥 تصدير JSON</button>
+            </div>
+            <div id="discoveriesList" style="max-height:180px;overflow-y:auto;font-size:.72rem">
+              <p style="color:var(--text-muted)" data-i18n="discoveries.empty">لم يُكتشف بعد — شغّل الاستكشاف.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-controls">
+          <div class="stats-grid">
+            <div class="stat-box"><div class="stat-box__label" id="statLabel1">Gen</div><div class="stat-box__value num" id="statVal1">0</div></div>
+            <div class="stat-box"><div class="stat-box__label" id="statLabel2">Archive</div><div class="stat-box__value num" id="statVal2">0</div></div>
+            <div class="stat-box"><div class="stat-box__label" id="statLabel3">Best Novelty</div><div class="stat-box__value num" id="statVal3">0%</div></div>
+          </div>
+
+          <div class="control-group">
+            <div style="font-size:.75rem;font-weight:600;color:var(--text-secondary)" data-i18n="label.bestvars">أفضل فرد حالي</div>
+            <div id="bestVarsDisplay" style="background:var(--bg-primary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-family:monospace;font-size:.7rem;min-height:40px">
+              —
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-row">
+              <button class="btn btn--primary" id="btnStart" data-i18n="btn.start">▶ ابدأ</button>
+              <button class="btn btn--secondary" id="btnStop" data-i18n="btn.stop">⏹ إيقاف</button>
+            </div>
+            <div class="control-row">
+              <button class="btn btn--secondary" id="btnStep" data-i18n="btn.step">⏭ جيل</button>
+              <button class="btn btn--secondary" id="btnReset" data-i18n="btn.reset">🔄 إعادة</button>
+            </div>
+          </div>
+
+          <div class="control-group" style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:.75rem;font-weight:600;color:var(--text-secondary)" data-i18n="log.title">سجل الأحداث</span>
+              <button class="btn btn--ghost" style="padding:2px 6px;font-size:10px" id="btnClearLog" data-i18n="log.clear">مسح</button>
+            </div>
+            <div class="log-box" id="labLog"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+// ============================================================
+// 1. UTILITIES
+// ============================================================
+function createRng(seed){let a=seed>>>0;return()=>{a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function randRange(rng,a,b){return a+rng()*(b-a);}
+function randInt(rng,a,b){return Math.floor(a+rng()*(b-a+1));}
+
+// Euclidean distance between two state vectors
+function euclideanDistance(a,b){
+  if(!a||!b) return 0;
+  const n=Math.min(a.length,b.length);
+  let sum=0;
+  for(let i=0;i<n;i++){
+    const d=a[i]-b[i];
+    sum+=d*d;
+  }
+  return Math.sqrt(sum);
+}
+
+// Shannon entropy of a normalized array
+function shannonEntropy(arr){
+  if(!arr||arr.length===0) return 0;
+  let sum=0;
+  for(const v of arr) sum+=Math.abs(v);
+  if(sum<1e-9) return 0;
+  let H=0;
+  for(const v of arr){
+    const p=Math.abs(v)/sum;
+    if(p>1e-12) H-=p*Math.log2(p);
+  }
+  return H;
+}
+
+// Lempel-Ziv complexity approximation (simple)
+function lzComplexity(arr){
+  if(!arr||arr.length<2) return 0;
+  const binary=arr.map(v=>v>0.5?1:0);
+  const n=binary.length;
+  let i=0, c=1, l=1;
+  while(i+l<n){
+    if(binary[i+l]===binary[c]){ l++; }
+    else { c++; l=1; }
+    if(i+l>=n) break;
+    i++;
+  }
+  return c;
+}
+
+// ============================================================
+// 2. I18N
+// ============================================================
+const DICT={
+  ar:{
+    'hero.title.line1':'اكتشاف مفتوح النهاية','hero.title.line2':'النظام يبحث عن المجهول',
+    'hero.desc':'لا أهداف مسبقة. النظام يستكشف فضاء المحاكاة، يكافئ الحالات الجديدة والمعقدة، ويسجل ظواهر لم نتوقعها.',
+    'hero.warning':'⚠️ هذا ليس بحثاً عن هدف. إنه بحث عن الابتكار (Novelty Search). النظام يُكافأ على الحالات البعيدة عن الأرشيف والمعقدة هيكلياً.',
+    'hero.stat.labs':'مختبرات','hero.stat.pop':'فرد/جيل','hero.stat.gen':'أجيال',
+    'labs.title':'المختبرات','labs.subtitle':'اختر مختبراً لبدء الاستكشاف المفتوح',
+    'filter.all':'الكل','filter.biology':'أحياء','filter.physics':'فيزياء','filter.math':'رياضيات','filter.cs':'حاسوب',
+    'btn.back':'رجوع','btn.start':'▶ ابدأ','btn.stop':'⏹ إيقاف','btn.step':'⏭ جيل','btn.reset':'🔄 إعادة',
+    'btn.export':'📥 تصدير JSON',
+    'log.title':'سجل الأحداث','log.clear':'مسح',
+    'discoveries.title':'الاكتشافات الغريبة','discoveries.empty':'لم يُكتشف بعد — شغّل الاستكشاف.',
+    'label.bestvars':'أفضل فرد حالي',
+    'log.init':'تهيئة المختبر','log.started':'بدأ الاستكشاف المفتوح','log.stopped':'إيقاف','log.reset':'إعادة تهيئة','log.gen':'الجيل',
+    'log.discovered':'✨ ظاهرة جديدة','log.exported':'✅ تم التصدير',
+    'stat.gen':'جيل','stat.archive':'أرشيف','stat.novelty':'أفضل ابتكار',
+    'lab.cancer.title':'تطور السرطان','lab.cancer.desc':'استكشاف حالات نمو غير متوقعة.',
+    'lab.cancer_chronic.title':'الأمراض المزمنة','lab.cancer_chronic.desc':'استكشاف ديناميكيات الالتهاب.',
+    'lab.4d.title':'البعد الرابع','lab.4d.desc':'استكشاف أنماط خلوية جديدة.',
+    'lab.algo.title':'الخوارزميات','lab.algo.desc':'استكشاف مسارات غير متوقعة.',
+    'lab.storage.title':'التخزين','lab.storage.desc':'استكشاف توزيعات احتمالية غريبة.',
+    'lab.cosmic.title':'التطور الكوني','lab.cosmic.desc':'استكشاف ديناميكيات كونية غريبة.',
+    'lab.space.title':'الفضاء','lab.space.desc':'استكشاف مدارات فوضوية أو ثلاثية.',
+    'lab.interactive.title':'الكون التفاعلي','lab.interactive.desc':'استكشاف تداخلات موجية ثابتة.',
+    'lab.math.title':'الكون الرياضي','lab.math.desc':'استكشاف أشكال رياضية غريبة.',
+    'lab.relativity.title':'النسبية','lab.relativity.desc':'استكشاف حالات طاقة قصوى.',
+    'lab.consciousness.title':'الوعي','lab.consciousness.desc':'استكشاف أنماط حياة جديدة.',
+    'lab.programming.title':'لغة البرمجة','lab.programming.desc':'استكشاف ترتيبات غير متوقعة.',
+    'lab.earth.title':'محاكي الأرض','lab.earth.desc':'استكشاف مناخات غريبة.'
+  },
+  en:{
+    'hero.title.line1':'Open-Ended Discovery','hero.title.line2':'The system searches for the unknown',
+    'hero.desc':'No predefined goals. The system explores the simulation space, rewards novel and complex states, and records unexpected phenomena.',
+    'hero.warning':'⚠️ This is not goal search. It is Novelty Search. The system is rewarded for states far from the archive and structurally complex.',
+    'hero.stat.labs':'Labs','hero.stat.pop':'Individuals/Gen','hero.stat.gen':'Generations',
+    'labs.title':'Labs','labs.subtitle':'Choose a lab to begin open-ended exploration',
+    'filter.all':'All','filter.biology':'Biology','filter.physics':'Physics','filter.math':'Math','filter.cs':'CS',
+    'btn.back':'Back','btn.start':'▶ Start','btn.stop':'⏹ Stop','btn.step':'⏭ Gen','btn.reset':'🔄 Reset',
+    'btn.export':'📥 Export JSON',
+    'log.title':'Event Log','log.clear':'Clear',
+    'discoveries.title':'Strange Discoveries','discoveries.empty':'Nothing yet — run exploration.',
+    'label.bestvars':'Current Best Individual',
+    'log.init':'Lab initialized','log.started':'Open-ended exploration started','log.stopped':'Stopped','log.reset':'Reset','log.gen':'Generation',
+    'log.discovered':'✨ New phenomenon','log.exported':'✅ Exported',
+    'stat.gen':'Gen','stat.archive':'Archive','stat.novelty':'Best Novelty',
+    'lab.cancer.title':'Cancer Evolution','lab.cancer.desc':'Explore unexpected growth states.',
+    'lab.cancer_chronic.title':'Chronic Diseases','lab.cancer_chronic.desc':'Explore inflammation dynamics.',
+    'lab.4d.title':'4th Dimension','lab.4d.desc':'Explore new cellular patterns.',
+    'lab.algo.title':'Algorithms','lab.algo.desc':'Explore unexpected paths.',
+    'lab.storage.title':'Storage','lab.storage.desc':'Explore strange probability distributions.',
+    'lab.cosmic.title':'Cosmic Evolution','lab.cosmic.desc':'Explore strange cosmic dynamics.',
+    'lab.space.title':'Space','lab.space.desc':'Explore chaotic or three-body orbits.',
+    'lab.interactive.title':'Interactive Cosmos','lab.interactive.desc':'Explore standing wave interference.',
+    'lab.math.title':'Math Cosmos','lab.math.desc':'Explore strange mathematical shapes.',
+    'lab.relativity.title':'Relativity','lab.relativity.desc':'Explore extreme energy states.',
+    'lab.consciousness.title':'Consciousness','lab.consciousness.desc':'Explore new life patterns.',
+    'lab.programming.title':'Programming Languages','lab.programming.desc':'Explore unexpected orderings.',
+    'lab.earth.title':'Earth Simulator','lab.earth.desc':'Explore strange climates.'
+  }
+};
+
+let currentLang=localStorage.getItem('lang')||'ar';
+let currentTheme=localStorage.getItem('theme')||'light';
+let currentFilter='all';
+let activeLabId=null;
+let rafId=null;
+let engine=null;
+let logHistory=[];
+let running=false;
+function t(k){return DICT[currentLang][k]||k;}
+
+// ============================================================
+// 3. LAB DEFINITIONS
+// Each lab provides:
+//   - vars: array of {name, min, max, isInt}
+//   - simulate: function(vars, rng) => { stateVector: Float32Array, rawState: any }
+//   - draw: function(ctx, rawState, canvas)
+// No goal! Only state extraction.
+// ============================================================
+const LABS=[
+  // CANCER: simulate cell growth with drugs; state = final cell count + distribution
+  {
+    id:'cancer', cat:'biology', icon:'🧬', bg:'linear-gradient(135deg,#D70015,#ff6b6b)',
+    vars:[
+      {name:'doseA', min:0, max:100, isInt:false},
+      {name:'doseB', min:0, max:100, isInt:false},
+      {name:'immunity', min:0, max:1, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      let cells=1000;
+      const history=[];
+      const dt=0.1;
+      const killA=vars.doseA*0.03;
+      const killB=vars.doseB*0.02;
+      const immune=vars.immunity*0.5;
+      for(let step=0;step<100;step++){
+        const totalKill=killA+killB+immune;
+        cells=cells+cells*0.5*dt*(1-cells/2000)-cells*totalKill*dt;
+        if(cells<0)cells=0;
+        if(cells>5000)cells=5000;
+        if(step%10===0)history.push(cells);
+      }
+      const stateVector=Float32Array.from([cells, ...history]);
+      return {stateVector, rawState:{cells, history, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const hist=raw.history;
+      ctx.strokeStyle='#ff4444'; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let i=0;i<hist.length;i++){
+        const x=(i/(hist.length-1))*W;
+        const y=H-clamp(hist[i]/2000,0,1)*H*0.8;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.font='14px monospace';
+      ctx.fillText('Cells: '+Math.round(raw.cells), 20, 30);
+    }
+  },
+  // CANCER_CHRONIC: 3 drugs, inflammation dynamics
+  {
+    id:'cancer_chronic', cat:'biology', icon:'💊', bg:'linear-gradient(135deg,#B25000,#ffa500)',
+    vars:[
+      {name:'d1', min:0, max:100, isInt:false},
+      {name:'d2', min:0, max:100, isInt:false},
+      {name:'d3', min:0, max:100, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      let inflam=100;
+      const history=[];
+      const dt=0.1;
+      const kill=vars.d1*0.02+vars.d2*0.015+vars.d3*0.01;
+      const sideEffect=(vars.d1*vars.d2+vars.d2*vars.d3)*0.0005;
+      for(let step=0;step<100;step++){
+        inflam=inflam-inflam*kill*dt+sideEffect*dt;
+        if(inflam<0)inflam=0;
+        if(step%10===0)history.push(inflam);
+      }
+      const stateVector=Float32Array.from([inflam, ...history]);
+      return {stateVector, rawState:{inflam, history, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const hist=raw.history;
+      ctx.strokeStyle='#ffa500'; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let i=0;i<hist.length;i++){
+        const x=(i/(hist.length-1))*W;
+        const y=H-clamp(hist[i]/100,0,1)*H*0.8;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.font='14px monospace';
+      ctx.fillText('Inflammation: '+raw.inflam.toFixed(2), 20, 30);
+    }
+  },
+  // 4D: cellular automaton with rule byte
+  {
+    id:'4d', cat:'math', icon:'🧊', bg:'linear-gradient(135deg,#8b5cf6,#ec4899)',
+    vars:[
+      {name:'rule', min:0, max:255, isInt:true}
+    ],
+    simulate:(vars, rng)=>{
+      const W=20,H=20;
+      const rule=vars.rule&0xFF;
+      const rngCA=createRng(Math.floor(vars.rule*1000)+42);
+      let grid=new Uint8Array(W*H);
+      for(let i=0;i<W*H;i++)grid[i]=rngCA()>0.5?1:0;
+      const history=[];
+      for(let step=0;step<30;step++){
+        const next=new Uint8Array(W*H);
+        for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+          const L=grid[y*W+((x-1+W)%W)];
+          const C=grid[y*W+x];
+          const R=grid[y*W+((x+1)%W)];
+          next[y*W+x]=(rule>>(L*4+C*2+R))&1;
+        }
+        grid=next;
+        if(step%5===0)history.push(Array.from(grid).reduce((a,b)=>a+b,0));
+      }
+      // State vector: downsampled grid + density history
+      const downsampled=[];
+      for(let y=0;y<H;y+=4)for(let x=0;x<W;x+=4){
+        downsampled.push(grid[y*W+x]);
+      }
+      const stateVector=Float32Array.from([...downsampled, ...history]);
+      return {stateVector, rawState:{grid, W, H, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const grid=raw.grid;
+      const gw=raw.W, gh=raw.H;
+      const cellW=W/gw, cellH=H/gh;
+      for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+        if(grid[y*gw+x]){
+          ctx.fillStyle='#00d4ff';
+          ctx.fillRect(x*cellW,y*cellH,cellW-1,cellH-1);
+        }
+      }
+    }
+  },
+  // ALGO: path with 4 waypoints
+  {
+    id:'algo', cat:'cs', icon:'⚙️', bg:'linear-gradient(135deg,#0071E3,#00d4ff)',
+    vars:[
+      {name:'x1', min:0, max:10, isInt:false},
+      {name:'y1', min:0, max:10, isInt:false},
+      {name:'x2', min:0, max:10, isInt:false},
+      {name:'y2', min:0, max:10, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      const points=[[0,0],[vars.x1,vars.y1],[vars.x2,vars.y2],[10,10]];
+      const stateVector=Float32Array.from([vars.x1,vars.y1,vars.x2,vars.y2]);
+      return {stateVector, rawState:{points, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const points=raw.points;
+      const scale=W/12;
+      ctx.strokeStyle='#ff4444'; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let i=0;i<points.length;i++){
+        const x=points[i][0]*scale+scale;
+        const y=H-points[i][1]*scale-scale;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      for(const p of points){
+        ctx.fillStyle='#00aaff';
+        ctx.beginPath();
+        ctx.arc(p[0]*scale+scale,H-p[1]*scale-scale,5,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
+  },
+  // STORAGE: 8 probs
+  {
+    id:'storage', cat:'cs', icon:'💾', bg:'linear-gradient(135deg,#248A3D,#4ade80)',
+    vars:Array.from({length:8},(_,i)=>({name:'p'+i, min:0, max:1, isInt:false})),
+    simulate:(vars, rng)=>{
+      const probs=[];
+      let sum=0;
+      for(let i=0;i<8;i++){
+        const p=Math.max(0,vars['p'+i]);
+        probs.push(p);
+        sum+=p;
+      }
+      let normalized;
+      if(sum<1e-9){normalized=probs.map(()=>1/8);}
+      else normalized=probs.map(p=>p/sum);
+      // Sorted probs as state
+      const sorted=[...normalized].sort((a,b)=>a-b);
+      const stateVector=Float32Array.from([...normalized, ...sorted]);
+      return {stateVector, rawState:{probs:normalized, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const probs=raw.probs;
+      const barW=(W-100)/8;
+      for(let i=0;i<8;i++){
+        const h=probs[i]*350;
+        ctx.fillStyle='#00aaff';
+        ctx.fillRect(50+i*barW, H-50-h, barW-4, h);
+      }
+    }
+  },
+  // COSMIC: matter + dark energy
+  {
+    id:'cosmic', cat:'physics', icon:'🌌', bg:'linear-gradient(135deg,#1e293b,#475569)',
+    vars:[
+      {name:'matter', min:0, max:1, isInt:false},
+      {name:'darkEnergy', min:0, max:1, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      let a=1.0;
+      const dt=0.05;
+      const history=[];
+      for(let step=0;step<200;step++){
+        const grav=-vars.matter/(a*a);
+        const de=vars.darkEnergy*a;
+        const accel=grav+de;
+        a=a+accel*dt*dt;
+        if(a<0.01)a=0.01;
+        if(a>10)a=10;
+        if(step%20===0)history.push(a);
+      }
+      const stateVector=Float32Array.from([a, ...history]);
+      return {stateVector, rawState:{a, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const a=raw.a;
+      const cx=W/2, cy=H/2;
+      const r=Math.min(W,H)/2*Math.min(1,1/a);
+      ctx.strokeStyle='#00aaff'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+      ctx.fillStyle='#ffdd00';
+      ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fill();
+    }
+  },
+  // SPACE: orbit with v0 and angle
+  {
+    id:'space', cat:'physics', icon:'🚀', bg:'linear-gradient(135deg,#0071E3,#1e40af)',
+    vars:[
+      {name:'v0', min:0, max:2, isInt:false},
+      {name:'angle', min:0, max:360, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      const GM=1;
+      const dt=0.05;
+      let x=5, y=0;
+      const ang=vars.angle*Math.PI/180;
+      let vx=-vars.v0*Math.sin(ang);
+      let vy=vars.v0*Math.cos(ang);
+      const trail=[];
+      for(let step=0;step<500;step++){
+        const r2=x*x+y*y;
+        const r=Math.sqrt(r2);
+        if(r<1e-6)break;
+        const ax=-GM*x/(r2*r);
+        const ay=-GM*y/(r2*r);
+        vx+=ax*dt; vy+=ay*dt;
+        x+=vx*dt; y+=vy*dt;
+        if(step%20===0)trail.push([x,y]);
+        if(r>50)break;
+      }
+      // State: final position + trail downsampled
+      const flat=[];
+      for(const p of trail){flat.push(p[0]/10,p[1]/10);}
+      const stateVector=Float32Array.from([x/10,y/10,...flat]);
+      return {stateVector, rawState:{x,y,trail,vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const cx=W/2, cy=H/2;
+      ctx.fillStyle='#ffdd00'; ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fill();
+      const scale=40;
+      ctx.strokeStyle='#00aaff'; ctx.lineWidth=1.5;
+      ctx.beginPath();
+      for(let i=0;i<raw.trail.length;i++){
+        const tx=cx+raw.trail[i][0]*scale;
+        const ty=cy+raw.trail[i][1]*scale;
+        if(i===0)ctx.moveTo(tx,ty);else ctx.lineTo(tx,ty);
+      }
+      ctx.stroke();
+      ctx.fillStyle='#00aaff';
+      ctx.beginPath(); ctx.arc(cx+raw.x*scale,cy+raw.y*scale,5,0,Math.PI*2); ctx.fill();
+    }
+  },
+  // INTERACTIVE: wave with damping and diffusion
+  {
+    id:'interactive', cat:'physics', icon:'⚛️', bg:'linear-gradient(135deg,#B25000,#f59e0b)',
+    vars:[
+      {name:'damping', min:0, max:1, isInt:false},
+      {name:'diffusion', min:0, max:1, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      const N=50;
+      let u=new Float32Array(N);
+      const cx=N/2;
+      for(let i=0;i<N;i++)u[i]=Math.exp(-(i-cx)*(i-cx)/20);
+      const c2=0.1+vars.diffusion*0.4;
+      const history=[];
+      for(let step=0;step<200;step++){
+        const uNext=new Float32Array(N);
+        for(let i=1;i<N-1;i++){
+          const lap=u[i-1]+u[i+1]-2*u[i];
+          uNext[i]=u[i]*(1-vars.damping*0.1)+c2*lap;
+        }
+        u.set(uNext);
+        if(step%20===0)history.push(Array.from(u).map(v=>v*100));
+      }
+      const last=Array.from(u);
+      const stateVector=Float32Array.from([...last, ...history.flat()]);
+      return {stateVector, rawState:{u, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const u=raw.u;
+      const N=u.length;
+      const cy=H/2;
+      ctx.strokeStyle='#00aaff'; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let i=0;i<N;i++){
+        const x=(i/(N-1))*W;
+        const y=cy-u[i]*H*0.4;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+  },
+  // MATH: polynomial coefficients
+  {
+    id:'math', cat:'math', icon:'📐', bg:'linear-gradient(135deg,#8b5cf6,#a78bfa)',
+    vars:[
+      {name:'a', min:-5, max:5, isInt:false},
+      {name:'b', min:-5, max:5, isInt:false},
+      {name:'c', min:-5, max:5, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      // Sample polynomial at 20 points
+      const samples=[];
+      for(let i=0;i<20;i++){
+        const x=(i/19)*4-2;
+        samples.push(vars.a*x*x+vars.b*x+vars.c);
+      }
+      const stateVector=Float32Array.from(samples);
+      return {stateVector, rawState:{a:vars.a, b:vars.b, c:vars.c, samples}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const cx=W/2, cy=H/2;
+      const scale=40;
+      ctx.strokeStyle='#334155'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+      ctx.strokeStyle='#00aaff'; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let px=0;px<W;px++){
+        const x=(px-cx)/scale;
+        const y=raw.a*x*x+raw.b*x+raw.c;
+        const py=cy-y*scale;
+        if(px===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+      }
+      ctx.stroke();
+    }
+  },
+  // RELATIVITY: mass, velocity
+  {
+    id:'relativity', cat:'physics', icon:'🌀', bg:'linear-gradient(135deg,#1e293b,#0ea5e9)',
+    vars:[
+      {name:'mass', min:1, max:100, isInt:false},
+      {name:'velocity', min:0, max:0.99, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      const v=vars.velocity;
+      const gamma=1/Math.sqrt(1-v*v);
+      const energy=vars.mass*gamma;
+      const stateVector=Float32Array.from([vars.mass/100, v, gamma, energy/700]);
+      return {stateVector, rawState:{vars, energy, gamma}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const energy=raw.energy;
+      const barW=W-100;
+      const h=clamp(energy/700,0,1)*300;
+      ctx.fillStyle='#0ea5e9';
+      ctx.fillRect(50, H-50-h, barW, h);
+      ctx.fillStyle='#fff'; ctx.font='14px monospace';
+      ctx.fillText('Energy: '+energy.toFixed(2), 50, 30);
+    }
+  },
+  // CONSCIOUSNESS: 5-cell pattern
+  {
+    id:'consciousness', cat:'biology', icon:'🧠', bg:'linear-gradient(135deg,#ec4899,#f43f5e)',
+    vars:[
+      {name:'x1', min:0, max:9, isInt:true},{name:'y1', min:0, max:9, isInt:true},
+      {name:'x2', min:0, max:9, isInt:true},{name:'y2', min:0, max:9, isInt:true},
+      {name:'x3', min:0, max:9, isInt:true},{name:'y3', min:0, max:9, isInt:true},
+      {name:'x4', min:0, max:9, isInt:true},{name:'y4', min:0, max:9, isInt:true},
+      {name:'x5', min:0, max:9, isInt:true},{name:'y5', min:0, max:9, isInt:true}
+    ],
+    simulate:(vars, rng)=>{
+      const W=12,H=12;
+      let grid=new Uint8Array(W*H);
+      const cells=[
+        [vars.x1,vars.y1],[vars.x2,vars.y2],[vars.x3,vars.y3],
+        [vars.x4,vars.y4],[vars.x5,vars.y5]
+      ];
+      for(const [x,y] of cells){
+        if(x>=0&&x<W&&y>=0&&y<H)grid[y*W+x]=1;
+      }
+      const history=[];
+      for(let step=0;step<20;step++){
+        const next=new Uint8Array(W*H);
+        for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+          let n=0;
+          for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+            if(dx===0&&dy===0)continue;
+            const nx=(x+dx+W)%W,ny=(y+dy+H)%H;
+            n+=grid[ny*W+nx];
+          }
+          const i=y*W+x;
+          next[i]=grid[i]?(n===2||n===3?1:0):(n===3?1:0);
+        }
+        grid=next;
+        if(step%4===0)history.push(Array.from(grid).reduce((a,b)=>a+b,0));
+      }
+      // Downsampled final grid
+      const ds=[];
+      for(let y=0;y<H;y+=2)for(let x=0;x<W;x+=2)ds.push(grid[y*W+x]);
+      const stateVector=Float32Array.from([...ds, ...history]);
+      return {stateVector, rawState:{grid, W, H, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const grid=raw.grid;
+      const gw=raw.W, gh=raw.H;
+      const cellW=W/gw, cellH=H/gh;
+      for(let y=0;y<gh;y++)for(let x=0;x<gw;x++){
+        if(grid[y*gw+x]){
+          ctx.fillStyle='#00d4ff';
+          ctx.fillRect(x*cellW,y*cellH,cellW-1,cellH-1);
+        }
+      }
+    }
+  },
+  // PROGRAMMING: permutation of 5
+  {
+    id:'programming', cat:'cs', icon:'💻', bg:'linear-gradient(135deg,#0f172a,#334155)',
+    vars:[
+      {name:'p1', min:0, max:4, isInt:true},
+      {name:'p2', min:0, max:4, isInt:true},
+      {name:'p3', min:0, max:4, isInt:true},
+      {name:'p4', min:0, max:4, isInt:true},
+      {name:'p5', min:0, max:4, isInt:true}
+    ],
+    simulate:(vars, rng)=>{
+      const perm=[vars.p1,vars.p2,vars.p3,vars.p4,vars.p5];
+      const stateVector=Float32Array.from(perm.map(v=>v/4));
+      return {stateVector, rawState:{perm, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const perm=raw.perm;
+      const barW=(W-100)/5;
+      for(let i=0;i<5;i++){
+        const h=(perm[i]+1)/5*300;
+        ctx.fillStyle='#00aaff';
+        ctx.fillRect(50+i*barW, H-50-h, barW-4, h);
+        ctx.fillStyle='#fff'; ctx.font='14px monospace'; ctx.textAlign='center';
+        ctx.fillText(perm[i], 50+i*barW+barW/2, H-20);
+      }
+      ctx.textAlign='start';
+    }
+  },
+  // EARTH: greenhouse, forests
+  {
+    id:'earth', cat:'physics', icon:'🌍', bg:'linear-gradient(135deg,#248A3D,#0ea5e9)',
+    vars:[
+      {name:'greenhouse', min:0, max:100, isInt:false},
+      {name:'forests', min:0, max:100, isInt:false}
+    ],
+    simulate:(vars, rng)=>{
+      const temp=-5+vars.greenhouse*0.15-vars.forests*0.05;
+      const stateVector=Float32Array.from([vars.greenhouse/100, vars.forests/100, temp/40]);
+      return {stateVector, rawState:{temp, vars}};
+    },
+    draw:(ctx, raw, canvas)=>{
+      const W=canvas.width, H=canvas.height;
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,W,H);
+      const temp=raw.temp;
+      const h=clamp((temp+10)/50,0,1)*300;
+      ctx.fillStyle='#ff6b6b';
+      ctx.fillRect(50, H-50-h, W-100, h);
+      ctx.fillStyle='#fff'; ctx.font='14px monospace';
+      ctx.fillText('Temp: '+temp.toFixed(1)+'°C', 50, 30);
+    }
+  }
+];
+
+// ============================================================
+// 4. NOVELTY SEARCH ENGINE
+// ============================================================
+function createNoveltyEngine(labId, seed, canvas){
+  const lab=LABS.find(l=>l.id===labId);
+  if(!lab) return null;
+  const ctx=canvas.getContext('2d');
+  canvas.width=500; canvas.height=500;
+
+  let rng=createRng(seed);
+  let generation=0;
+  let population=[];
+  let archive=[];          // list of {stateVector, vars, novelty, complexity}
+  let bestNovelty=0;
+  let discoveries=[];
+  let discoveredSigs={};
+  const POP_SIZE=60;
+  const ELITE=8;
+  const K_NEAREST=5;       // k-nearest neighbors for novelty
+  const ARCHIVE_MAX=200;
+  const DISCOVERY_THRESHOLD=0.85;
+
+  function randomIndividual(){
+    const vars={};
+    for(const v of lab.vars){
+      if(v.isInt) vars[v.name]=randInt(rng,v.min,v.max);
+      else vars[v.name]=randRange(rng,v.min,v.max);
+    }
+    return vars;
+  }
+
+  function computeComplexity(stateVector){
+    // Combine Shannon entropy + LZ complexity
+    const arr=Array.from(stateVector);
+    const norm=arr.map(v=>Math.abs(v));
+    const total=norm.reduce((a,b)=>a+b,0);
+    let H=0;
+    if(total>1e-9){
+      for(const v of norm){
+        const p=v/total;
+        if(p>1e-12) H-=p*Math.log2(p);
+      }
+    }
+    const Hmax=Math.log2(Math.max(2,arr.length));
+    const entropyScore=Hmax>0?H/Hmax:0;
+    // LZ on binarized
+    const mean=total/arr.length;
+    const binary=arr.map(v=>Math.abs(v)>mean?1:0);
+    let lz=0;
+    try{ lz=lzComplexity(binary); }catch(e){ lz=1; }
+    const lzScore=clamp(lz/arr.length,0,1);
+    return 0.5*entropyScore+0.5*lzScore;
+  }
+
+  function computeNovelty(stateVector){
+    if(archive.length===0) return 1.0;
+    // Compute distance to all archive states, take mean of k-nearest
+    const distances=[];
+    for(const entry of archive){
+      distances.push(euclideanDistance(stateVector, entry.stateVector));
+    }
+    distances.sort((a,b)=>a-b);
+    const k=Math.min(K_NEAREST, distances.length);
+    let sum=0;
+    for(let i=0;i<k;i++) sum+=distances[i];
+    const avgDist=sum/k;
+    // Normalize: assume max expected distance ~ sqrt(n)
+    const maxDist=Math.sqrt(stateVector.length)||1;
+    return clamp(avgDist/maxDist, 0, 1);
+  }
+
+  function evaluate(vars){
+    try{
+      const res=lab.simulate(vars, rng);
+      if(!res||!res.stateVector) return null;
+      const stateVector=res.stateVector;
+      const novelty=computeNovelty(stateVector);
+      const complexity=computeComplexity(stateVector);
+      const fitness=0.6*novelty+0.4*complexity;
+      return {vars, stateVector, rawState:res.rawState, novelty, complexity, fitness};
+    }catch(e){
+      return null;
+    }
+  }
+
+  function initPopulation(){
+    population=[];
+    for(let i=0;i<POP_SIZE;i++){
+      const vars=randomIndividual();
+      const ind=evaluate(vars);
+      if(ind) population.push(ind);
+    }
+    population.sort((a,b)=>b.fitness-a.fitness);
+    updateBest();
+  }
+
+  function updateBest(){
+    if(population.length>0){
+      bestNovelty=population[0].novelty;
+    }
+  }
+
+  function addToArchive(ind){
+    if(!ind) return;
+    // Check if too similar to existing archive entry
+    for(const entry of archive){
+      if(euclideanDistance(ind.stateVector, entry.stateVector)<0.05){
+        return; // Too similar, skip
+      }
+    }
+    archive.push({
+      stateVector: ind.stateVector,
+      vars: {...ind.vars},
+      novelty: ind.novelty,
+      complexity: ind.complexity
+    });
+    if(archive.length>ARCHIVE_MAX) archive.shift();
+  }
+
+  function tournamentSelect(){
+    let best=null;
+    for(let i=0;i<3;i++){
+      if(population.length===0) return null;
+      const c=population[randInt(rng,0,population.length-1)];
+      if(!best||c.fitness>best.fitness) best=c;
+    }
+    return best;
+  }
+
+  function crossover(p1, p2){
+    const child={};
+    for(const v of lab.vars){
+      if(rng()<0.5) child[v.name]=p1[v.name];
+      else child[v.name]=p2[v.name];
+    }
+    return child;
+  }
+
+  function mutate(ind){
+    const m={...ind};
+    for(const v of lab.vars){
+      if(rng()<0.15){
+        if(v.isInt) m[v.name]=randInt(rng,v.min,v.max);
+        else m[v.name]=randRange(rng,v.min,v.max);
+      }
+    }
+    return m;
+  }
+
+  function nextGeneration(){
+    generation++;
+    const newPop=[];
+    // Elitism
+    for(let i=0;i<ELITE&&i<population.length;i++){
+      newPop.push(population[i]);
+    }
+    while(newPop.length<POP_SIZE){
+      const p1=tournamentSelect();
+      const p2=tournamentSelect();
+      if(!p1||!p2) break;
+      let child=crossover(p1.vars, p2.vars);
+      child=mutate(child);
+      const ind=evaluate(child);
+      if(ind) newPop.push(ind);
+    }
+    population=newPop;
+    population.sort((a,b)=>b.fitness-a.fitness);
+    // Add best individual to archive
+    if(population.length>0) addToArchive(population[0]);
+    updateBest();
+  }
+
+  function checkDiscovery(){
+    if(population.length===0) return null;
+    const best=population[0];
+    if(best.novelty<DISCOVERY_THRESHOLD && best.complexity<DISCOVERY_THRESHOLD) return null;
+    const sig=JSON.stringify(best.vars)+'_'+best.novelty.toFixed(2);
+    if(discoveredSigs[sig]) return null;
+    discoveredSigs[sig]=true;
+    const entry={
+      gen:generation,
+      vars:{...best.vars},
+      novelty:best.novelty,
+      complexity:best.complexity,
+      fitness:best.fitness,
+      lab:labId
+    };
+    discoveries.push(entry);
+    return entry;
+  }
+
+  function reset(){
+    rng=createRng(seed);
+    generation=0;
+    population=[];
+    archive=[];
+    bestNovelty=0;
+    discoveries=[];
+    discoveredSigs={};
+    initPopulation();
+    draw();
+  }
+
+  function draw(){
+    if(population.length===0||!population[0].rawState){
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,500,500);
+      return;
+    }
+    try{
+      lab.draw(ctx, population[0].rawState, canvas);
+    }catch(e){
+      ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,500,500);
+      ctx.fillStyle='#ff4444'; ctx.font='14px monospace';
+      ctx.fillText('Render error', 20, 30);
+    }
+  }
+
+  return {
+    init:reset,
+    step:()=>{nextGeneration();draw();},
+    draw,
+    getStats:()=>[
+      {label:t('stat.gen'),value:generation},
+      {label:t('stat.archive'),value:archive.length},
+      {label:t('stat.novelty'),value:Math.round(bestNovelty*100)+'%'}
+    ],
+    getBestVars:()=>population.length>0?population[0].vars:null,
+    getBestState:()=>population.length>0?population[0]:null,
+    checkDiscovery,
+    getDiscoveries:()=>discoveries,
+    getState:()=>({gen:generation,archiveSize:archive.length,bestNovelty,discoveries:discoveries.length})
+  };
+}
+
+// ============================================================
+// 5. UI LOGIC
+// ============================================================
+function applyLang(){
+  document.documentElement.lang=currentLang;
+  document.documentElement.dir=currentLang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(k) el.textContent=t(k);
+  });
+  document.getElementById('btnLang').textContent=currentLang==='ar'?'EN':'عربي';
+  if(activeLabId) renderLabView(activeLabId);
+  else renderLandingView();
+}
+
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme',currentTheme);
+  document.getElementById('btnTheme').textContent=currentTheme==='dark'?'☀️':'🌙';
+  localStorage.setItem('theme',currentTheme);
+}
+
+function renderLandingView(){
+  document.getElementById('landingView').classList.remove('hidden');
+  document.getElementById('labView').classList.add('hidden');
+  const grid=document.getElementById('labsGrid');
+  const filtered=currentFilter==='all'?LABS:LABS.filter(l=>l.cat===currentFilter);
+  grid.innerHTML=filtered.map(lab=>`
+    <a href="#/lab/${lab.id}" class="lab-card">
+      <div class="lab-card__header">
+        <div class="lab-card__icon" style="background:${lab.bg}">${lab.icon}</div>
+        <span class="lab-card__badge">🌀 Novelty</span>
+      </div>
+      <h3 class="lab-card__title">${t('lab.'+lab.id+'.title')}</h3>
+      <p class="lab-card__desc">${t('lab.'+lab.id+'.desc')}</p>
+      <div class="lab-card__footer">
+        <span>${lab.vars.length} vars</span>
+        <span style="color:var(--accent)">${t('btn.back')} →</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+function renderLabView(labId){
+  const lab=LABS.find(l=>l.id===labId);
+  if(!lab){window.location.hash='#/';return;}
+  document.getElementById('landingView').classList.add('hidden');
+  document.getElementById('labView').classList.remove('hidden');
+  document.getElementById('labTitle').textContent=t('lab.'+labId+'.title');
+  document.getElementById('labDesc').textContent=t('lab.'+labId+'.desc');
+  document.getElementById('labLog').innerHTML='';
+  document.getElementById('discoveriesList').innerHTML=`<p style="color:var(--text-muted)">${t('discoveries.empty')}</p>`;
+  document.getElementById('bestVarsDisplay').textContent='—';
+  logHistory=[];
+  stopLoop();
+  const canvas=document.getElementById('labCanvas');
+  engine=createNoveltyEngine(labId, 42, canvas);
+  if(!engine) return;
+  engine.init();
+  renderInfo(lab);
+  updateStatsUI();
+  addLog(t('log.init')+': '+t('lab.'+labId+'.title'), 'success');
+}
+
+function renderInfo(lab){
+  const box=document.getElementById('infoBox');
+  box.innerHTML=`<div class="info-box__title">Open-Ended Exploration</div>
+    <div class="info-item">
+      <div class="info-item__name">What is rewarded?</div>
+      <div class="info-item__desc">Novelty (60%) — distance from archive. Complexity (40%) — entropy + LZ.</div>
+    </div>
+    <div class="info-item">
+      <div class="info-item__name">Variables</div>
+      <div class="info-item__desc">${lab.vars.map(v=>v.name+' ['+v.min+'..'+v.max+']').join(' · ')}</div>
+    </div>`;
+}
+
+function updateStatsUI(){
+  if(!engine) return;
+  const s=engine.getStats();
+  for(let i=0;i<3;i++){
+    if(s[i]){
+      document.getElementById('statLabel'+(i+1)).textContent=s[i].label;
+      document.getElementById('statVal'+(i+1)).textContent=s[i].value;
+    }
+  }
+  const bestVars=engine.getBestVars();
+  const display=document.getElementById('bestVarsDisplay');
+  if(bestVars){
+    display.innerHTML=Object.entries(bestVars).map(([k,v])=>
+      `<span style="color:var(--accent)">${k}</span>=${typeof v==='number'?v.toFixed(2):v}`
+    ).join(' · ');
+  } else {
+    display.textContent='—';
+  }
+}
+
+function updateDiscoveriesUI(){
+  if(!engine) return;
+  const discoveries=engine.getDiscoveries();
+  const list=document.getElementById('discoveriesList');
+  if(discoveries.length===0){
+    list.innerHTML=`<p style="color:var(--text-muted)">${t('discoveries.empty')}</p>`;
+    return;
+  }
+  list.innerHTML=discoveries.slice(-10).reverse().map(d=>`
+    <div style="padding:6px;border-bottom:1px solid var(--border);color:var(--gold)">
+      <div style="font-weight:600">✨ ${t('log.discovered')} (Gen ${d.gen})</div>
+      <div style="font-family:monospace;font-size:.7rem;color:var(--text-secondary);margin-top:2px">
+        ${Object.entries(d.vars).map(([k,v])=>k+'='+(typeof v==='number'?v.toFixed(2):v)).join(' · ')}
+      </div>
+      <div style="font-size:.65rem;color:var(--text-muted)">
+        Novelty: ${(d.novelty*100).toFixed(1)}% · Complexity: ${(d.complexity*100).toFixed(1)}%
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// 6. SIMULATION LOOP
+// ============================================================
+function startLoop(){
+  if(running||!engine) return;
+  running=true;
+  addLog(t('log.started'), 'info');
+  const loop=()=>{
+    if(!running||!engine) return;
+    engine.step();
+    updateStatsUI();
+    const disc=engine.checkDiscovery();
+    if(disc){
+      const varsStr=Object.entries(disc.vars).map(([k,v])=>k+'='+(typeof v==='number'?v.toFixed(2):v)).join(', ');
+      const msg=`${t('log.discovered')}: ${t('lab.'+activeLabId+'.title')} | Vars: ${varsStr} | Novelty: ${(disc.novelty*100).toFixed(1)}% | Complexity: ${(disc.complexity*100).toFixed(1)}%`;
+      addLog(msg, 'discovery');
+      updateDiscoveriesUI();
+    }
+    rafId=requestAnimationFrame(loop);
+  };
+  rafId=requestAnimationFrame(loop);
+}
+
+function stopLoop(){
+  running=false;
+  if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+}
+
+function stepOnce(){
+  stopLoop();
+  if(!engine) return;
+  engine.step();
+  updateStatsUI();
+  const disc=engine.checkDiscovery();
+  if(disc){
+    const varsStr=Object.entries(disc.vars).map(([k,v])=>k+'='+(typeof v==='number'?v.toFixed(2):v)).join(', ');
+    const msg=`${t('log.discovered')}: ${t('lab.'+activeLabId+'.title')} | Vars: ${varsStr} | Novelty: ${(disc.novelty*100).toFixed(1)}% | Complexity: ${(disc.complexity*100).toFixed(1)}%`;
+    addLog(msg, 'discovery');
+    updateDiscoveriesUI();
+  }
+  addLog(t('log.gen')+' '+engine.getState().gen, 'info');
+}
+
+function resetLab(){
+  stopLoop();
+  if(!engine) return;
+  engine.init();
+  updateStatsUI();
+  updateDiscoveriesUI();
+  addLog(t('log.reset'), 'info');
+}
+
+// ============================================================
+// 7. EXPORT
+// ============================================================
+function exportDiscoveries(){
+  if(!engine) return;
+  const discoveries=engine.getDiscoveries();
+  const data={
+    lab:activeLabId,
+    labName:t('lab.'+activeLabId+'.title'),
+    mode:'novelty-search',
+    exportedAt:new Date().toISOString(),
+    discoveries:discoveries
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`novelty-${activeLabId}-${Date.now()}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  addLog(t('log.exported'), 'success');
+}
+
+// ============================================================
+// 8. LOGGING
+// ============================================================
+function addLog(msg, type){
+  logHistory.push({timestamp:new Date().toISOString(), message:msg, type:type||'info'});
+  if(logHistory.length>500) logHistory.shift();
+  const box=document.getElementById('labLog');
+  if(!box) return;
+  const div=document.createElement('div');
+  div.className='log-entry '+(type||'');
+  div.textContent=`[${new Date().toLocaleTimeString()}] ${msg}`;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+// ============================================================
+// 9. ROUTER
+// ============================================================
+function router(){
+  const hash=window.location.hash||'#/';
+  if(hash.startsWith('#/lab/')){
+    const labId=hash.replace('#/lab/','');
+    if(!LABS.find(l=>l.id===labId)){window.location.hash='#/';return;}
+    if(activeLabId!==labId){
+      stopLoop();
+      engine=null;
+      activeLabId=labId;
+      renderLabView(labId);
+    }
+  } else {
+    stopLoop();
+    engine=null;
+    activeLabId=null;
+    renderLandingView();
+  }
+}
+
+// ============================================================
+// 10. EVENT WIRING
+// ============================================================
+document.getElementById('btnLang').addEventListener('click',()=>{
+  currentLang=currentLang==='ar'?'en':'ar';
+  localStorage.setItem('lang',currentLang);
+  applyLang();
+});
+
+document.getElementById('btnTheme').addEventListener('click',()=>{
+  currentTheme=currentTheme==='light'?'dark':'light';
+  applyTheme();
+});
+
+document.getElementById('filters').addEventListener('click',(e)=>{
+  if(e.target.classList.contains('filter-btn')){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    currentFilter=e.target.dataset.filter;
+    renderLandingView();
+  }
+});
+
+document.getElementById('btnStart').addEventListener('click',startLoop);
+document.getElementById('btnStop').addEventListener('click',stopLoop);
+document.getElementById('btnStep').addEventListener('click',stepOnce);
+document.getElementById('btnReset').addEventListener('click',resetLab);
+document.getElementById('btnExport').addEventListener('click',exportDiscoveries);
+document.getElementById('btnClearLog').addEventListener('click',()=>{
+  document.getElementById('labLog').innerHTML='';
+  logHistory=[];
+});
+
+window.addEventListener('hashchange',router);
+window.addEventListener('DOMContentLoaded',()=>{
+  applyTheme();
+  applyLang();
+  router();
+});
+</script>
+</body>
+</html>
